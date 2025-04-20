@@ -1,3 +1,5 @@
+
+// pages/Verify.js
 import React, { useEffect, useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 import { loadModels, getFullFaceDescription } from "../utils/faceUtils";
@@ -30,6 +32,15 @@ const Verify = () => {
         const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors);
         const bestMatch = faceMatcher.findBestMatch(result.descriptor);
         setMatch(bestMatch.toString());
+
+        if (bestMatch.label !== "unknown") {
+            const attendance = JSON.parse(localStorage.getItem("attendance") || "[]");
+            attendance.push({
+                name: bestMatch.label,
+                time: new Date().toLocaleString()
+            });
+            localStorage.setItem("attendance", JSON.stringify(attendance));
+        }
     };
 
     return (
